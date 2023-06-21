@@ -34,6 +34,7 @@ public class ImageCommandService {
         return new UploadResponse();
     }
 
+    // 프리미엄 이미지 업로드
     public UploadResponse uploadPremiumImages(ImageRequest imageRequest) {
 
         return imageCommandDomainService.uploadPremiumImages(imageRequest);
