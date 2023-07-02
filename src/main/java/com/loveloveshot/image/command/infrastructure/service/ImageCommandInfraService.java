@@ -42,28 +42,6 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
         System.out.println("status = " + status);
         System.out.println("taskId = " + taskId);
 
-//        // LinkedMultiValueMap에 List 담기
-//        LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//        body.add("files", imageRequest.getMaleImages());
-//        body.add("files", imageRequest.getFemaleImages());
-//
-//// HttpHeaders 설정
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-//
-//// HttpEntity 생성
-//        HttpEntity<LinkedMultiValueMap<String, Object>> httpEntity = new HttpEntity<>(body, headers);
-//
-//// WebClient로 POST 요청 보내기
-//        byte[] response = WEBCLIENT.post()
-//                .uri("/main/standard") // baseUrl 이후 uri
-////                .contentType(MediaType.MULTIPART_FORM_DATA)
-//                .bodyValue(BodyInserters.fromValue(httpEntity)) // 요청 body
-//                .retrieve() // 디코딩
-//                .bodyToMono(byte[].class) // 0~1개의 결과 리턴
-//                .block(); // blocking
-
-
 //        List<String> files = new ArrayList<>();
 //        String filePath = "src/main/webapp/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
 //        try {
