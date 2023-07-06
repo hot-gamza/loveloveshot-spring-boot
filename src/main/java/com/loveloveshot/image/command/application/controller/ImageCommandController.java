@@ -60,15 +60,6 @@ public class ImageCommandController {
         System.out.println("taskId = " + taskId);
         List<File> files = new ArrayList<>();
         String filePath = "src/main/webapp/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
-//        try {
-//            FileOutputStream fos = new FileOutputStream(filePath);
-//            fos.write(aiImage);
-//            fos.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        files.add(0, filePath);
-//        System.out.println("files = " + files);
 
         File targetFile = new File("src/main/webapp/AiImages/" + aiImage.getOriginalFilename() + ".png"); // 저장할 파일 객체 생성
         aiImage.transferTo(targetFile); // 파일 저장
