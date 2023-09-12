@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 public class ImageCommandInfraService implements ImageCommandDomainService {
 
     @Override
-    public void createAISingleImage(RequestSingleImageDTO singleImageDTO) {
+    public void getAISingleImage(RequestSingleImageDTO singleImageDTO) {
 //        System.out.println(singleImageDTO.getMaleSingleImage().getOriginalFilename());
     }
 
     @Override
-    public void createAIImageList(RequestImageListDTO imageListDTO) {
+    public void getAIImageList(RequestImageListDTO imageListDTO) {
 //        System.out.println(imageListDTO.getMaleImageList().get(0).getOriginalFilename());
     }
 }
