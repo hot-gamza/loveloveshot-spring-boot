@@ -14,7 +14,7 @@ public class FeedbackCommandService {
     private final FeedbackCommandRepository feedbackCommandRepository;
 
     @Transactional
-    public FeedbackResponse submitFeedback(FeedbackRequest feedbackRequest) {
+    public FeedbackResponse createFeedback(FeedbackRequest feedbackRequest) {
         Feedback feedback = new Feedback.Builder()
                 .feedbackContent(feedbackRequest.getFeedbackContent())
                 .build();
@@ -26,5 +26,5 @@ public class FeedbackCommandService {
                 savedFeedback.getFeedbackContent()
         );
     }
-    
+
 }
