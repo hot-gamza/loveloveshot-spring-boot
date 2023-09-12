@@ -29,7 +29,13 @@ public class ImageCommandController {
             throw new IllegalArgumentException("사진을 첨부해주세요");
         }
 
-        imageCommandService.getSingleImage(singleImageDTO);
+        // 설명. 파일 확장자 이미지 형식인지 확인
+        if(!maleSingleImage.getContentType().startsWith("image") ||
+                !femaleSingleImage.getContentType().startsWith("image")) {
+            throw new IllegalArgumentException("이미지 형식의 파일을 올려주세요");
+        }
+
+            imageCommandService.transferSingleImage(singleImageDTO);
     }
 
 
@@ -45,7 +51,11 @@ public class ImageCommandController {
             throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
         }
 
-        imageCommandService.getImageList(imageListDTO);
+        if(femaleImageList.size() < 2 || femaleImageList.size() > 20) {
+            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
+        }
+
+        imageCommandService.transferImageList(imageListDTO);
     }
 
 }
