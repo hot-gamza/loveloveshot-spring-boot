@@ -35,7 +35,7 @@ public class FeedbackCommandServiceTest {
     void submitFeedbackTest() {
         long before = feedbackCommandRepository.count();
 
-        feedbackCommandService.submitFeedback(feedbackRequest);
+        feedbackCommandService.createFeedback(feedbackRequest);
 
         long after = feedbackCommandRepository.count();
 
