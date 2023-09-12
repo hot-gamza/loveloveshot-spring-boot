@@ -1,5 +1,6 @@
 package com.loveloveshot.image.command.domain.aggregate.entity;
 
+import com.loveloveshot.image.command.domain.aggregate.vo.UserVO;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,15 +20,23 @@ public class Image {
     private Long imageNo;
 
     @Column
-    private String imageName;
+    private String originImageName;
+
+    @Column
+    private String savedImageName;
 
     @Column
     private String imagePath;
 
+    @Embedded
+    private UserVO userVO;
+
     @Builder
-    public Image(Long imageNo, String imageName, String imagePath) {
+    public Image(Long imageNo, String originImageName, String savedImageName, String imagePath, UserVO userVO) {
         this.imageNo = imageNo;
-        this.imageName = imageName;
+        this.originImageName = originImageName;
+        this.savedImageName = savedImageName;
         this.imagePath = imagePath;
+        this.userVO = userVO;
     }
 }
