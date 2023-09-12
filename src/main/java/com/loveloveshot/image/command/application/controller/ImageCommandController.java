@@ -4,6 +4,7 @@ import com.loveloveshot.image.command.application.dto.RequestImageListDTO;
 import com.loveloveshot.image.command.application.dto.RequestSingleImageDTO;
 import com.loveloveshot.image.command.application.service.ImageCommandService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +25,10 @@ public class ImageCommandController {
         singleImageDTO.setMaleSingleImage(maleSingleImage);
         singleImageDTO.setFemaleSingleImage(femaleSingleImage);
 
+        if(maleSingleImage.isEmpty() || femaleSingleImage.isEmpty()) {
+            throw new IllegalArgumentException("사진을 첨부해주세요");
+        }
+
         imageCommandService.getSingleImage(singleImageDTO);
     }
 
@@ -35,6 +40,10 @@ public class ImageCommandController {
 
         imageListDTO.setMaleImageList(maleImageList);
         imageListDTO.setFemaleImageList(femaleImageList);
+
+        if(maleImageList.size() < 2 || maleImageList.size() > 20) {
+            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
+        }
 
         imageCommandService.getImageList(imageListDTO);
     }
