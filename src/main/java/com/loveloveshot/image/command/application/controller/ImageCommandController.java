@@ -57,5 +57,4 @@ public class ImageCommandController {
 
         imageCommandService.transferImageList(imageListDTO);
     }
-
 }

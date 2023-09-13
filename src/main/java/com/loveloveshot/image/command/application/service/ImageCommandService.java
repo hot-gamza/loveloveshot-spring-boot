@@ -2,7 +2,6 @@ package com.loveloveshot.image.command.application.service;
 
 import com.loveloveshot.image.command.application.dto.RequestImageListDTO;
 import com.loveloveshot.image.command.application.dto.RequestSingleImageDTO;
-import com.loveloveshot.image.command.application.dto.SaveImageDTO;
 import com.loveloveshot.image.command.domain.aggregate.entity.Image;
 import com.loveloveshot.image.command.domain.aggregate.vo.UserVO;
 import com.loveloveshot.image.command.domain.repository.ImageCommandRepository;
@@ -32,7 +31,7 @@ public class ImageCommandService {
         imageCommandDomainService.getAIImageList(imageListDTO);
     }
 
-    public void createAISingleImage(MultipartFile aiImage, Long userNO) {
+    public void createAISingleImage(MultipartFile aiImage, Long userNo) {
 
         String root = "C:\\app-file";
         String filePath = root + "/AIImages";
@@ -48,12 +47,15 @@ public class ImageCommandService {
 
         try {
             aiImage.transferTo(new File(filePath + savedName));
+
             Image image = Image.builder()
                     .originImageName(originFileName)
                     .savedImageName(savedName)
                     .imagePath(filePath)
-                    .userVO(new UserVO(userNO))
+                    .userVO(new UserVO(userNo))
                     .build();
+
+            imageCommandRepository.save(image);
 
         } catch (IOException e) {
             new File(filePath + savedName).delete();  //업로드 후 DB저장 중 오류났을 때 업로드된 이미지 삭제해줌
