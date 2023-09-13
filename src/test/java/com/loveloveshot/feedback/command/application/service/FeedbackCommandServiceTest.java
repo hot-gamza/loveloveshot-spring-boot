@@ -43,20 +43,20 @@ public class FeedbackCommandServiceTest {
         Assertions.assertEquals(before + 1, after);
     }
 
-    @Test
-    @DisplayName("특정 피드백 삭제 테스트 : ")
-    void deleteFeedbackByFeedbackNoTest() {
-
-    }
-
-    @Test
-    @DisplayName("피드백 전체 삭제 테스트 : 특정 회원")
-    void deleteFeedbackByUserNoTest() {
-
-    }
-
-    @Test
-    @DisplayName("피드백 전체 삭제 테스트 : 모든 회원")
-    void deleteAllFeedbackTest() {
-    }
+//    @Test
+//    @DisplayName("특정 피드백 삭제 테스트 : ")
+//    void deleteFeedbackByFeedbackNoTest() {
+//
+//    }
+//
+//    @Test
+//    @DisplayName("피드백 전체 삭제 테스트 : 특정 회원")
+//    void deleteFeedbackByUserNoTest() {
+//
+//    }
+//
+//    @Test
+//    @DisplayName("피드백 전체 삭제 테스트 : 모든 회원")
+//    void deleteAllFeedbackTest() {
+//    }
 }
