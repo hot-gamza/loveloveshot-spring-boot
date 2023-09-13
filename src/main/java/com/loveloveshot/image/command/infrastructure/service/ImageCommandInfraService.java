@@ -24,8 +24,8 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
         return AIImageResponseDTO;
     }
 
-    @Override
-    public void getAIImageList(ImageListRequestDTO imageListDTO) {
+//    @Override
+//    public void getAIImageList(ImageListRequestDTO imageListDTO) {
 //        System.out.println(imageListDTO.getMaleImageList().get(0).getOriginalFilename());
-    }
+//    }
 }

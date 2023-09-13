@@ -10,5 +10,5 @@ public interface ImageCommandDomainService {
 
     AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO);
 
-    void getAIImageList(ImageListRequestDTO imageListDTO);
+//    void getAIImageList(ImageListRequestDTO imageListDTO);
 }
