@@ -15,8 +15,8 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       auto-commit: 'true'
-    password: ${MYSQL_PASSWORD}
-    username: ${MYSQL_USERNAME}
-    url: ${MYSQL_URL}
+    password: loveloveshot
+    username: loveloveshot
+    url: jdbc:mysql://localhost:3306/loveloveshot?allowPublicKeyRetrieval=true&useSSL=false&characterEncoding=UTF-8&useUnicode=true&serverTimezone=Asia/Seoul
     profiles:
       active: dev
