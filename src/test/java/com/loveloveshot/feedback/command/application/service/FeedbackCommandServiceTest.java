@@ -21,44 +21,42 @@ public class FeedbackCommandServiceTest {
     @Autowired
     private FeedbackCommandRepository feedbackCommandRepository;
 
-//    @BeforeEach
-//    public void setUp() {
-//        Feedback feedback = new Feedback.Builder()
-//                .feedbackContent("정말 훌륭합니다.")
-//                .build();
-//
-//        feedbackRequest.setFeedbackContent(feedback.getFeedbackContent());
-//    }
+    @BeforeEach
+    public void setUp() {
+        Feedback feedback = new Feedback.Builder()
+                .feedbackContent("정말 훌륭합니다.")
+                .build();
+
+        feedbackRequest.setFeedbackContent(feedback.getFeedbackContent());
+    }
 
     @Test
     @DisplayName("피드백 제출 테스트 : success")
     void submitFeedbackTest() {
         Assertions.assertEquals(1,1);
-//        long before = feedbackCommandRepository.count();
-//
-//        feedbackCommandService.createFeedback(feedbackRequest);
-//
-//        long after = feedbackCommandRepository.count();
-//
-//        Assertions.assertEquals(before + 1, after);
+        long before = feedbackCommandRepository.count();
+
+        feedbackCommandService.createFeedback(feedbackRequest);
+
+        long after = feedbackCommandRepository.count();
+
+        Assertions.assertEquals(before + 1, after);
     }
 
-//    @Test
-//    @DisplayName("특정 피드백 삭제 테스트 : ")
-//    void deleteFeedbackByFeedbackNoTest() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("피드백 전체 삭제 테스트 : 특정 회원")
-//    void deleteFeedbackByUserNoTest() {
-//
-//    }
-//
-//    @Test
-//    @DisplayName("피드백 전체 삭제 테스트 : 모든 회원")
-//    void deleteAllFeedbackTest() {
-//
-//    }
+    @Test
+    @DisplayName("특정 피드백 삭제 테스트 : ")
+    void deleteFeedbackByFeedbackNoTest() {
 
+    }
+
+    @Test
+    @DisplayName("피드백 전체 삭제 테스트 : 특정 회원")
+    void deleteFeedbackByUserNoTest() {
+
+    }
+
+    @Test
+    @DisplayName("피드백 전체 삭제 테스트 : 모든 회원")
+    void deleteAllFeedbackTest() {
+    }
 }

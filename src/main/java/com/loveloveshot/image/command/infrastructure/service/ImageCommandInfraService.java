@@ -1,5 +1,6 @@
 package com.loveloveshot.image.command.infrastructure.service;
 
+import com.loveloveshot.common.annotation.InfraService;
 import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
 import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
@@ -7,7 +8,7 @@ import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-@Service
+@InfraService
 public class ImageCommandInfraService implements ImageCommandDomainService {
 
     private MultipartFile aiImage;
