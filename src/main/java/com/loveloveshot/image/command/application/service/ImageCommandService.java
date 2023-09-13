@@ -1,14 +1,15 @@
 package com.loveloveshot.image.command.application.service;
 
-import com.loveloveshot.image.command.application.dto.RequestImageListDTO;
-import com.loveloveshot.image.command.application.dto.RequestSingleImageDTO;
+import com.loveloveshot.common.response.ApiResponse;
+import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
+import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
+import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
 import com.loveloveshot.image.command.domain.aggregate.entity.Image;
 import com.loveloveshot.image.command.domain.aggregate.vo.UserVO;
 import com.loveloveshot.image.command.domain.repository.ImageCommandRepository;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,32 +22,24 @@ public class ImageCommandService {
     private final ImageCommandDomainService imageCommandDomainService;
     private final ImageCommandRepository imageCommandRepository;
 
-    public void transferSingleImage(RequestSingleImageDTO singleImageDTO) {
 
-        imageCommandDomainService.getAISingleImage(singleImageDTO);
-    }
+    public AIImageResponseDTO createAISingleImage(Long userNo, SingleImageRequestDTO singleImageDTO) {
 
-    public void transferImageList(RequestImageListDTO imageListDTO) {
+        AIImageResponseDTO aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
 
-        imageCommandDomainService.getAIImageList(imageListDTO);
-    }
-
-    public void createAISingleImage(MultipartFile aiImage, Long userNo) {
-
-        String root = "C:\\app-file";
-        String filePath = root + "/AIImages";
+        String filePath = "C:\\AIImages";
 
         File dir = new File(filePath);
         if (!dir.exists()) {
             dir.mkdirs();   //폴더 없을 시 자동으로 하위폴더 생성
         }
 
-        String originFileName = aiImage.getOriginalFilename();  //원본 파일 이름
+        String originFileName = aiImageDTO.getAiImage().getOriginalFilename();  //원본 파일 이름
         String ext = originFileName.substring(originFileName.lastIndexOf(".") + 1); //파일 확장자
         String savedName = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext; //저장되는 이름
 
         try {
-            aiImage.transferTo(new File(filePath + savedName));
+            aiImageDTO.getAiImage().transferTo(new File(filePath + savedName));
 
             Image image = Image.builder()
                     .originImageName(originFileName)
@@ -59,7 +52,8 @@ public class ImageCommandService {
 
         } catch (IOException e) {
             new File(filePath + savedName).delete();  //업로드 후 DB저장 중 오류났을 때 업로드된 이미지 삭제해줌
-
         }
+
+        return aiImageDTO;
     }
 }
