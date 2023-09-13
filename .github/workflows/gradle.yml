@@ -34,10 +34,10 @@ jobs:
           mysql user: ${{ secrets.MYSQL_USERNAME }}
           mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
-      - name: make bootstrap.yml
-        run:
-          touch ./src/main/resources/bootstrap.yml
-        shell: bash
+      # - name: make bootstrap.yml
+      #   run:
+      #     touch ./src/main/resources/bootstrap.yml
+      #   shell: bash
 
       # - name: deliver bootstrap
       #   run: echo "${{ secrets.BOOTSTRAP_SECRET }}" > ./src/main/resources/bootstrap.yml
