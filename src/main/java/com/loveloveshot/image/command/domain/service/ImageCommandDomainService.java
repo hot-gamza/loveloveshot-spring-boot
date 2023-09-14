@@ -8,7 +8,7 @@ import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 @DomainService
 public interface ImageCommandDomainService {
 
-    AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO);
+    AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO);
 
 //    void getAIImageList(ImageListRequestDTO imageListDTO);
 }

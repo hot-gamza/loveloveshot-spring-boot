@@ -5,14 +5,26 @@ import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
 import com.loveloveshot.image.command.application.dto.ImagesDTO;
 import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
+import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 @InfraService
+@RequiredArgsConstructor
 public class ImageCommandInfraService implements ImageCommandDomainService {
+
+    private final WebClient.Builder webClientBuilder;
+
     /**
      * Map을 jsonString으로 변환
      */
@@ -33,76 +45,44 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
     }
 
     @Override
-    public AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO) {
-        System.out.println("imagesDTO1 = " + imagesDTO.getMaleImage());
-        System.out.println("imagesDTO2 = " + imagesDTO.getFemaleImage());
+    public AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO ) {
 
         String reqURL = "http://192.168.0.40:5001/"; // AI 단독 이미지 생성 API URL
 
-        try {
-            // Set header
-            Map<String, String> headers = new HashMap<>();
-            HttpPostMultipart multipart = new HttpPostMultipart(reqURL, "utf-8", headers);
-            // Add form field
-//            multipart.addFormField("username", "test_name");
-//            multipart.addFormField("password", "test_psw");
-            // Add file
-            multipart.addFilePart("imgFile", new File(imagesDTO.getMaleImage()));
-            multipart.addFilePart("imgFile", new File(imagesDTO.getFemaleImage()));
-            // Print result
-            String response = multipart.finish();
-            System.out.println(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-//        try {
-//            URL url = new URL(reqURL);
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestMethod("POST");
-////            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-//            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + this.boundary);
-//            conn.setDoOutput(true);
-//
-//            Map<String, Object> requestMap = new HashMap<String, Object>();
-//            System.out.println(singleImageDTO.getMaleSingleImage());
-//            System.out.println(singleImageDTO.getFemaleSingleImage());
-//
-//            requestMap.put("male", singleImageDTO.getMaleSingleImage());
-//            requestMap.put("female", singleImageDTO.getFemaleSingleImage());
-//
-//            String requestBody = getJsonStringFromMap(requestMap);
-//            System.out.println("requestBody:" + requestBody);
-//
-//            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-//            bw.write(requestBody);
-//            bw.flush();
-//            bw.close();
-//
-//            System.out.println("getResponseCode():" + conn.getResponseCode());
-//            System.out.println("getResponseMessage():" + conn.getResponseMessage());
-//
-//            BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-//
-//            StringBuilder result = new StringBuilder();
-//            String line = "";
-//
-//            while ((line = br.readLine()) != null) {
-//                result.append(line);
-//            }
-//            System.out.println("response body : " + result); // 응답
-//
-//            // Gson 라이브러리로 JSON 파싱
-//            JsonElement element = JsonParser.parseString(result.toString());
-//
-//            MultipartFile aiImage = (MultipartFile) element;
-//
-//            return new AIImageResponseDTO(aiImage);
-//
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-        return null;
+        final WebClient webClient = webClientBuilder.baseUrl(reqURL).build();
+
+        MultipartBodyBuilder formData = new MultipartBodyBuilder();
+        formData.part("imgFile", singleImageDTO.getMaleSingleImage());
+        formData.part("imgFile", singleImageDTO.getFemaleSingleImage());
+
+        Mono<AIImageResponseDTO> response = webClient.post()
+                .uri("/")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(formData.build()))
+                .retrieve()
+                .bodyToMono(AIImageResponseDTO.class);
+        System.out.println("response = " + response);
+        return response.block();
     }
+
+//        try {
+//            // Set header
+//            Map<String, String> headers = new HashMap<>();
+//            HttpPostMultipart multipart = new HttpPostMultipart(reqURL, "utf-8", headers);
+//            // Add form field
+////            multipart.addFormField("username", "test_name");
+////            multipart.addFormField("password", "test_psw");
+//            // Add file
+//            multipart.addFilePart("imgFile", new File(imagesDTO.getMaleImage()));
+//            multipart.addFilePart("imgFile", new File(imagesDTO.getFemaleImage()));
+//            // Print result
+//            String response = multipart.finish();
+//            System.out.println(response);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
 //    @Override
 //    public void getAIImageList(ImageListRequestDTO imageListDTO) {

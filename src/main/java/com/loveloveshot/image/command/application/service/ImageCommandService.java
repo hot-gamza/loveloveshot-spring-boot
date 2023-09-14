@@ -22,9 +22,9 @@ public class ImageCommandService {
     private final ImageCommandRepository imageCommandRepository;
 
 
-    public AIImageResponseDTO createAISingleImage(Long userNo, SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO) {
+    public AIImageResponseDTO createAISingleImage(Long userNo, SingleImageRequestDTO singleImageDTO) {
 
-        AIImageResponseDTO aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO, imagesDTO);
+        AIImageResponseDTO aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
 
         String filePath = "C:\\AIImages/";
 

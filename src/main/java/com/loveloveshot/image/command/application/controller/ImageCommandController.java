@@ -27,6 +27,8 @@ public class ImageCommandController {
                                          @RequestParam MultipartFile femaleSingleImage,
                                          SingleImageRequestDTO singleImageDTO) {
 
+        System.out.println("maleSingleImage.getName() = " + maleSingleImage.getName());
+        System.out.println("femaleSingleImage = " + femaleSingleImage.getName());
         singleImageDTO.setMaleSingleImage(maleSingleImage);
         singleImageDTO.setFemaleSingleImage(femaleSingleImage);
 
@@ -41,38 +43,38 @@ public class ImageCommandController {
         }
 
         Long userNo = 1L;   //임의 값
-
-        String filePath = "C:\\originalAiImages/";
-
-        File dir = new File(filePath);
-        if (!dir.exists()) {
-            dir.mkdirs();   //폴더 없을 시 자동으로 하위폴더 생성
-        }
-
-        String originFileName1 = maleSingleImage.getOriginalFilename();  //원본 파일 이름
-        String ext1 = originFileName1.substring(originFileName1.lastIndexOf(".") + 1); //파일 확장자
-        String savedName1 = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext1; //저장되는 이름
-
-        String originFileName2 = maleSingleImage.getOriginalFilename();  //원본 파일 이름
-        String ext2 = originFileName2.substring(originFileName2.lastIndexOf(".") + 1); //파일 확장자
-        String savedName2 = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext2; //저장되는 이름
-
-        System.out.println("filePath = " + filePath + savedName1);
-        System.out.println("filePath = " + filePath + savedName2);
-
-        try {
-            maleSingleImage.transferTo(new File(filePath + savedName1));
-            femaleSingleImage.transferTo(new File(filePath + savedName2));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        ImagesDTO imagesDTO = new ImagesDTO();
-        imagesDTO.setMaleImage(filePath + savedName1);
-        imagesDTO.setFemaleImage(filePath + savedName2);
+//
+//        String filePath = "C:\\originalAiImages/";
+//
+//        File dir = new File(filePath);
+//        if (!dir.exists()) {
+//            dir.mkdirs();   //폴더 없을 시 자동으로 하위폴더 생성
+//        }
+//
+//        String originFileName1 = maleSingleImage.getOriginalFilename();  //원본 파일 이름
+//        String ext1 = originFileName1.substring(originFileName1.lastIndexOf(".") + 1); //파일 확장자
+//        String savedName1 = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext1; //저장되는 이름
+//
+//        String originFileName2 = maleSingleImage.getOriginalFilename();  //원본 파일 이름
+//        String ext2 = originFileName2.substring(originFileName2.lastIndexOf(".") + 1); //파일 확장자
+//        String savedName2 = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext2; //저장되는 이름
+//
+//        System.out.println("filePath = " + filePath + savedName1);
+//        System.out.println("filePath = " + filePath + savedName2);
+//
+//        try {
+//            maleSingleImage.transferTo(new File(filePath + savedName1));
+//            femaleSingleImage.transferTo(new File(filePath + savedName2));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        ImagesDTO imagesDTO = new ImagesDTO();
+//        imagesDTO.setMaleImage(filePath + savedName1);
+//        imagesDTO.setFemaleImage(filePath + savedName2);
 
         return ApiResponse.success("성공적으로 등록되었습니다."
-                , imageCommandService.createAISingleImage(userNo, singleImageDTO, imagesDTO));
+                , imageCommandService.createAISingleImage(userNo, singleImageDTO));
     }
 
 
