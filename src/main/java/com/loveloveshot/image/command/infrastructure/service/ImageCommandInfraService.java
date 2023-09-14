@@ -1,54 +1,66 @@
 package com.loveloveshot.image.command.infrastructure.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.loveloveshot.common.annotation.InfraService;
 import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
+import com.loveloveshot.image.command.application.dto.ImagesDTO;
 import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.*;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestTemplate;
+import org.json.simple.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 @InfraService
 public class ImageCommandInfraService implements ImageCommandDomainService {
-    private static final RestTemplate REST_TEMPLATE;
+    /**
+     * Map을 jsonString으로 변환
+     */
+    @SuppressWarnings("unchecked")
+    public static String getJsonStringFromMap(Map<String, Object> map) {
 
-    static {
-        // RestTemplate 기본 설정을 위한 Factory 생성
-        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(3000);
-        factory.setReadTimeout(3000);
-        factory.setBufferRequestBody(false); // 파일 전송은 이 설정을 꼭 해주자.
-        REST_TEMPLATE = new RestTemplate(factory);
+        JSONObject json = new JSONObject();
+
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            json.put(key, value);
+        }
+
+        return json.toJSONString();
     }
 
     @Override
-    public AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO) {
-        String reqURL = "http://192.168.0.198:5001/"; // AI 단독 이미지 생성 API URL
-        LinkedMultiValueMap<String, Object> map = new LinkedMultiValueMap<>();
-        JsonNode response;
-        HttpStatus httpStatus = HttpStatus.CREATED;
+    public AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO) {
+        System.out.println("imagesDTO1 = " + imagesDTO.getMaleImage());
+        System.out.println("imagesDTO2 = " + imagesDTO.getFemaleImage());
+
+        String reqURL = "http://192.168.0.40:5001/"; // AI 단독 이미지 생성 API URL
 
         try {
-            map.add("files",
-                    new MultipartInputStreamFileResource(singleImageDTO.getMaleSingleImage().getInputStream()
-                            , singleImageDTO.getMaleSingleImage().getOriginalFilename()));
-            // 최근 Spring 버전을 쓴다면 map.add("files", file.getResource()); 로 변경
-
-            map.add("files",
-                    new MultipartInputStreamFileResource(singleImageDTO.getFemaleSingleImage().getInputStream()
-                            , singleImageDTO.getFemaleSingleImage().getOriginalFilename()));
-
-            //            URL url = new URL(reqURL);
+            // Set header
+            Map<String, String> headers = new HashMap<>();
+            HttpPostMultipart multipart = new HttpPostMultipart(reqURL, "utf-8", headers);
+            // Add form field
+//            multipart.addFormField("username", "test_name");
+//            multipart.addFormField("password", "test_psw");
+            // Add file
+            multipart.addFilePart("imgFile", new File(imagesDTO.getMaleImage()));
+            multipart.addFilePart("imgFile", new File(imagesDTO.getFemaleImage()));
+            // Print result
+            String response = multipart.finish();
+            System.out.println(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        try {
+//            URL url = new URL(reqURL);
 //            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 //            conn.setRequestMethod("POST");
 ////            conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
-//            conn.setRequestProperty("Content-Type", "multipart/form-data");
+//            conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + this.boundary);
 //            conn.setDoOutput(true);
 //
 //            Map<String, Object> requestMap = new HashMap<String, Object>();
@@ -58,7 +70,7 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
 //            requestMap.put("male", singleImageDTO.getMaleSingleImage());
 //            requestMap.put("female", singleImageDTO.getFemaleSingleImage());
 //
-////            String requestBody = getJsonStringFromMap(requestMap);
+//            String requestBody = getJsonStringFromMap(requestMap);
 //            System.out.println("requestBody:" + requestBody);
 //
 //            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
@@ -85,58 +97,11 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
 //            MultipartFile aiImage = (MultipartFile) element;
 //
 //            return new AIImageResponseDTO(aiImage);
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-
-            HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity
-                    = new HttpEntity<>(map, headers);
-            response = REST_TEMPLATE.postForObject(reqURL, requestEntity, JsonNode.class);
-
-            System.out.println(response);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        return new ResponseEntity<>(response, httpStatus);
-    }
-
-//    /**
-//     * Map을 jsonString으로 변환
-//     */
-//    @SuppressWarnings("unchecked")
-//    public static String getJsonStringFromMap(Map<String, Object> map) {
 //
-//        JSONObject json = new JSONObject();
-//
-//        for (Map.Entry<String, Object> entry : map.entrySet()) {
-//
-//            String key = entry.getKey();
-//            Object value = entry.getValue();
-//
-//            json.put(key, value);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
 //        }
-//
-//        return json.toJSONString();
-//    }
-
-    class MultipartInputStreamFileResource extends InputStreamResource {
-
-        private final String filename;
-
-        MultipartInputStreamFileResource(InputStream inputStream, String filename) {
-            super(inputStream);
-            this.filename = filename;
-        }
-
-        @Override
-        public String getFilename() {
-            return this.filename;
-        }
-
-        @Override
-        public long contentLength() throws IOException {
-            return -1; // we do not want to generally read the whole stream into memory ...
-        }
+        return null;
     }
 
 //    @Override
