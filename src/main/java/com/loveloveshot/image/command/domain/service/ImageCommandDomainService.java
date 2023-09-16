@@ -1,14 +1,13 @@
 package com.loveloveshot.image.command.domain.service;
 
 import com.loveloveshot.common.annotation.DomainService;
-import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
-import com.loveloveshot.image.command.application.dto.ImagesDTO;
-import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
+import com.loveloveshot.image.command.application.dto.AiImageResponse;
+import com.loveloveshot.image.command.application.dto.SingleImageRequest;
 
 @DomainService
 public interface ImageCommandDomainService {
 
-    AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO);
+    AiImageResponse getAISingleImage(SingleImageRequest singleImageDTO);
 
 //    void getAIImageList(ImageListRequestDTO imageListDTO);
 }
