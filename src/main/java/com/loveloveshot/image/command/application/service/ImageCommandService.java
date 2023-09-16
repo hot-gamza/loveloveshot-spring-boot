@@ -1,9 +1,8 @@
 package com.loveloveshot.image.command.application.service;
 
-import com.loveloveshot.common.response.ApiResponse;
-import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
-import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
+import com.loveloveshot.image.command.application.dto.ImagesDTO;
+import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 import com.loveloveshot.image.command.domain.aggregate.entity.Image;
 import com.loveloveshot.image.command.domain.aggregate.vo.UserVO;
 import com.loveloveshot.image.command.domain.repository.ImageCommandRepository;
@@ -23,11 +22,11 @@ public class ImageCommandService {
     private final ImageCommandRepository imageCommandRepository;
 
 
-    public AIImageResponseDTO createAISingleImage(Long userNo, SingleImageRequestDTO singleImageDTO) {
+    public AIImageResponseDTO createAISingleImage(Long userNo, SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO) {
 
-        AIImageResponseDTO aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
+        AIImageResponseDTO aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO, imagesDTO);
 
-        String filePath = "C:\\AIImages";
+        String filePath = "C:\\AIImages/";
 
         File dir = new File(filePath);
         if (!dir.exists()) {
