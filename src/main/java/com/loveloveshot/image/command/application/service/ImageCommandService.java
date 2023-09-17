@@ -1,6 +1,7 @@
 package com.loveloveshot.image.command.application.service;
 
 import com.loveloveshot.image.command.application.dto.AiImageResponse;
+import com.loveloveshot.image.command.application.dto.ImageListRequest;
 import com.loveloveshot.image.command.application.dto.SingleImageRequest;
 import com.loveloveshot.image.command.domain.aggregate.entity.Image;
 import com.loveloveshot.image.command.domain.aggregate.vo.UserVO;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -20,11 +22,11 @@ public class ImageCommandService {
     private final ImageCommandRepository imageCommandRepository;
 
 
-    public AiImageResponse createAISingleImage(Long userNo, SingleImageRequest singleImageDTO) {
+    public AiImageResponse createAiSingleImage(Long userNo, SingleImageRequest singleImageDTO) {
 
-        AiImageResponse aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
+        AiImageResponse aiImageDTO = imageCommandDomainService.getAiSingleImage(singleImageDTO);
 
-        String filePath = "C:\\AIImages/";
+        String filePath = "C:\\AiImages/";
 
         File dir = new File(filePath);
         if (!dir.exists()) {
@@ -54,22 +56,22 @@ public class ImageCommandService {
         return aiImageDTO;
     }
 
-    public List<AIImageResponseDTO> createAIImageList(Long userNo, ImageListRequestDTO imageListDTO) {
+    public List<AiImageResponse> createAiImageList(Long userNo, ImageListRequest imageList) {
 
-        List<AIImageResponseDTO> aiImageListDTO = imageCommandDomainService.getAIImageList(imageListDTO);
+        List<AiImageResponse> aiImageList = imageCommandDomainService.getAiImageList(imageList);
 
-        String filePath = "C:\\AIImages/";
+        String filePath = "C:\\AiImages/";
 
         File dir = new File(filePath);
         if (!dir.exists()) {
             dir.mkdirs();   //폴더 없을 시 자동으로 하위폴더 생성
         }
 
-        for (AIImageResponseDTO aiImageDTO : aiImageListDTO) {
+        for (AiImageResponse aiImageDTO : aiImageList) {
 
-            String originFileName = aiImageDTO.getAiImage().getOriginalFilename();  //원본 파일 이름
-            String ext = originFileName.substring(originFileName.lastIndexOf(".") + 1); //파일 확장자
-            String savedName = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext; //저장되는 이름
+            String originFileName = aiImageDTO.getAiImage().getOriginalFilename();
+            String ext = originFileName.substring(originFileName.lastIndexOf(".") + 1);
+            String savedName = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext;
 
             try {
                 aiImageDTO.getAiImage().transferTo(new File(filePath + savedName));
@@ -88,6 +90,6 @@ public class ImageCommandService {
             }
         }
 
-        return aiImageListDTO;
+        return aiImageList;
     }
 }

@@ -2,7 +2,7 @@ package com.loveloveshot.image.command.application.controller;
 
 import com.loveloveshot.common.response.ApiResponse;
 import com.loveloveshot.image.command.application.dto.SingleImageRequest;
-import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
+import com.loveloveshot.image.command.application.dto.ImageListRequest;
 import com.loveloveshot.image.command.application.service.ImageCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,17 +41,16 @@ public class ImageCommandController {
         Long userNo = 1L;   //임의 값
 
         return ResponseEntity.ok(ApiResponse.success("성공적으로 등록되었습니다."
-                , imageCommandService.createAISingleImage(userNo, singleImageDTO)));
+                , imageCommandService.createAiSingleImage(userNo, singleImageDTO)));
     }
 
-
     @PostMapping("/imageList")
-    public ApiResponse uploadImageList(@RequestParam List<MultipartFile> maleImageList,
+    public ResponseEntity<ApiResponse> uploadImageList(@RequestParam List<MultipartFile> maleImageList,
                                 @RequestParam List<MultipartFile> femaleImageList,
-                                ImageListRequestDTO imageListDTO) {
+                                ImageListRequest imageList) {
 
-        imageListDTO.setMaleImageList(maleImageList);
-        imageListDTO.setFemaleImageList(femaleImageList);
+        imageList.setMaleImageList(maleImageList);
+        imageList.setFemaleImageList(femaleImageList);
 
         if(maleImageList.size() < 2 || maleImageList.size() > 20) {
             throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
@@ -74,6 +73,7 @@ public class ImageCommandController {
         }
         Long userNo = 1L;
 
-        return ApiResponse.success("성공적으로 등록되었습니다.", imageCommandService.createAIImageList(userNo, imageListDTO));
+        return ResponseEntity.ok(ApiResponse.success("성공적으로 등록되었습니다.",
+                imageCommandService.createAiImageList(userNo, imageList)));
     }
 }

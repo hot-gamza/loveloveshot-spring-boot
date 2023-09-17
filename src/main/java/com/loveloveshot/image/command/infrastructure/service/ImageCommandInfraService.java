@@ -2,9 +2,8 @@ package com.loveloveshot.image.command.infrastructure.service;
 
 import com.loveloveshot.common.annotation.InfraService;
 import com.loveloveshot.image.command.application.dto.AiImageResponse;
+import com.loveloveshot.image.command.application.dto.ImageListRequest;
 import com.loveloveshot.image.command.application.dto.SingleImageRequest;
-import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
-import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -17,7 +16,7 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
     final String REQUEST_URL = "http://192.168.0.40:5001"; // AI 이미지 생성 API URL
 
     @Override
-    public AiImageResponse getAISingleImage(SingleImageRequest singleImageDTO) {
+    public AiImageResponse getAiSingleImage(SingleImageRequest singleImageDTO) {
 
 //      HttpURLConnection 방식
 //        try {
@@ -59,11 +58,7 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
     }
 
     @Override
-    public List<AIImageResponseDTO> getAIImageList(ImageListRequestDTO imageListDTO) {
-
-        System.out.println("imageListDTO = " + imageListDTO.getMaleImageList().get(0).getOriginalFilename());
+    public List<AiImageResponse> getAiImageList(ImageListRequest imageList) {
         return null;
     }
-
-
 }
