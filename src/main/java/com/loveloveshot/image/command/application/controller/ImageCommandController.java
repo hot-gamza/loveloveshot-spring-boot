@@ -5,23 +5,26 @@ import com.loveloveshot.image.command.application.dto.SingleImageRequest;
 import com.loveloveshot.image.command.application.service.ImageCommandService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:3000"})
 public class ImageCommandController {
 
     private final ImageCommandService imageCommandService;
 
-    @PostMapping("/singleImage") // 필기. RequestParam에 name값을 지정해주지 않으면 디폴트로 변수명을 key값으로 가짐.
+    @PostMapping(value = "/singleImage")
+    // 필기. RequestParam에 name값을 지정해주지 않으면 디폴트로 변수명을 key값으로 가짐.
     public ResponseEntity<ApiResponse> uploadSingleImage(@RequestParam MultipartFile maleSingleImage,
                                                          @RequestParam MultipartFile femaleSingleImage,
-                                                         SingleImageRequest singleImageDTO) {
+                                                         SingleImageRequest singleImageDTO) throws IOException {
+        System.out.println("maleSingleImage = " + maleSingleImage);
+        System.out.println("femaleSingleImage = " + femaleSingleImage);
 
         singleImageDTO.setMaleSingleImage(maleSingleImage);
         singleImageDTO.setFemaleSingleImage(femaleSingleImage);
