@@ -10,8 +10,6 @@ import java.io.Serializable;
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class AiImageResponse implements Serializable {
-
+public class ImageResponse implements Serializable {
     private final MultipartFile aiImage;
-
 }
