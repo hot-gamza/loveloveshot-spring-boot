@@ -1,6 +1,7 @@
 package com.loveloveshot.image.command.application.controller;
 
 import com.loveloveshot.common.response.ApiResponse;
+import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
 import com.loveloveshot.image.command.application.dto.ImagesDTO;
 import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 import com.loveloveshot.image.command.application.service.ImageCommandService;
@@ -13,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -76,22 +78,35 @@ public class ImageCommandController {
     }
 
 
-//    @PostMapping("/imageList")
-//    public void uploadImageList(@RequestParam List<MultipartFile> maleImageList,
-//                                @RequestParam List<MultipartFile> femaleImageList,
-//                                ImageListRequestDTO imageListDTO) {
-//
-//        imageListDTO.setMaleImageList(maleImageList);
-//        imageListDTO.setFemaleImageList(femaleImageList);
-//
-//        if(maleImageList.size() < 2 || maleImageList.size() > 20) {
-//            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
-//        }
-//
-//        if(femaleImageList.size() < 2 || femaleImageList.size() > 20) {
-//            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
-//        }
-//
-//        imageCommandService.transferImageList(imageListDTO);
-//    }
+    @PostMapping("/imageList")
+    public ApiResponse uploadImageList(@RequestParam List<MultipartFile> maleImageList,
+                                @RequestParam List<MultipartFile> femaleImageList,
+                                ImageListRequestDTO imageListDTO) {
+
+        imageListDTO.setMaleImageList(maleImageList);
+        imageListDTO.setFemaleImageList(femaleImageList);
+
+        if(maleImageList.size() < 2 || maleImageList.size() > 20) {
+            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
+        }
+
+        if(femaleImageList.size() < 2 || femaleImageList.size() > 20) {
+            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
+        }
+
+        for (MultipartFile maleImage : maleImageList) {
+            if (!maleImage.getContentType().startsWith("image")) {
+                throw new IllegalArgumentException("이미지 형식의 파일을 올려주세요");
+            }
+        }
+
+        for (MultipartFile femaleImage : femaleImageList) {
+            if(!femaleImage.getContentType().startsWith("image")) {
+                throw new IllegalArgumentException("이미지 형식의 파일을 올려주세요");
+            }
+        }
+        Long userNo = 1L;
+
+        return ApiResponse.success("성공적으로 등록되었습니다.", imageCommandService.createAIImageList(userNo, imageListDTO));
+    }
 }

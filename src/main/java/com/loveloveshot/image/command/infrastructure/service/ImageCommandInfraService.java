@@ -2,11 +2,13 @@ package com.loveloveshot.image.command.infrastructure.service;
 
 import com.loveloveshot.common.annotation.InfraService;
 import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
+import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
 import com.loveloveshot.image.command.application.dto.ImagesDTO;
 import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import org.json.simple.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 @InfraService
@@ -65,9 +67,12 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
         return null;
     }
 
-//    @Override
-//    public void getAIImageList(ImageListRequestDTO imageListDTO) {
-//        System.out.println(imageListDTO.getMaleImageList().get(0).getOriginalFilename());
-//    }
+    @Override
+    public List<AIImageResponseDTO> getAIImageList(ImageListRequestDTO imageListDTO) {
+
+        System.out.println("imageListDTO = " + imageListDTO.getMaleImageList().get(0).getOriginalFilename());
+        return null;
+    }
+
 
 }
