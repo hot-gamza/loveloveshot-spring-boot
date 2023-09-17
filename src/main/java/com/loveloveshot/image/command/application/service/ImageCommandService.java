@@ -1,12 +1,12 @@
 package com.loveloveshot.image.command.application.service;
 
+import com.loveloveshot.image.command.application.dto.ImageResponse;
 import com.loveloveshot.image.command.application.dto.SingleImageRequest;
 import com.loveloveshot.image.command.domain.repository.ImageCommandRepository;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -17,9 +17,9 @@ public class ImageCommandService {
     private final ImageCommandRepository imageCommandRepository;
 
 
-    public File createAISingleImage(Long userNo, SingleImageRequest singleImageDTO) throws IOException {
+    public ImageResponse createAISingleImage(Long userNo, SingleImageRequest singleImageDTO) throws IOException {
 
-        File aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
+        ImageResponse aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
 
 //        String filePath = "C:\\AIImages/";
 //

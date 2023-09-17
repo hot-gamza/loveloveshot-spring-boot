@@ -13,7 +13,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:3000"})
+@CrossOrigin(origins = {"*"})
 public class ImageCommandController {
 
     private final ImageCommandService imageCommandService;
@@ -23,9 +23,6 @@ public class ImageCommandController {
     public ResponseEntity<ApiResponse> uploadSingleImage(@RequestParam MultipartFile maleSingleImage,
                                                          @RequestParam MultipartFile femaleSingleImage,
                                                          SingleImageRequest singleImageDTO) throws IOException {
-        System.out.println("maleSingleImage = " + maleSingleImage);
-        System.out.println("femaleSingleImage = " + femaleSingleImage);
-
         singleImageDTO.setMaleSingleImage(maleSingleImage);
         singleImageDTO.setFemaleSingleImage(femaleSingleImage);
 
