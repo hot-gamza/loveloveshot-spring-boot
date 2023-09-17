@@ -1,20 +1,15 @@
 package com.loveloveshot.image.command.application.service;
 
-import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
-import com.loveloveshot.image.command.application.dto.ImageListRequestDTO;
-import com.loveloveshot.image.command.application.dto.ImagesDTO;
-import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
+import com.loveloveshot.image.command.application.dto.AiImageResponse;
+import com.loveloveshot.image.command.application.dto.SingleImageRequest;
 import com.loveloveshot.image.command.domain.aggregate.entity.Image;
 import com.loveloveshot.image.command.domain.aggregate.vo.UserVO;
 import com.loveloveshot.image.command.domain.repository.ImageCommandRepository;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -25,9 +20,9 @@ public class ImageCommandService {
     private final ImageCommandRepository imageCommandRepository;
 
 
-    public AIImageResponseDTO createAISingleImage(Long userNo, SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO) {
+    public AiImageResponse createAISingleImage(Long userNo, SingleImageRequest singleImageDTO) {
 
-        AIImageResponseDTO aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO, imagesDTO);
+        AiImageResponse aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
 
         String filePath = "C:\\AIImages/";
 

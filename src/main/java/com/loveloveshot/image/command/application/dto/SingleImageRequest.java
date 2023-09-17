@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SingleImageRequestDTO {
+public class SingleImageRequest {
 
     private MultipartFile maleSingleImage;
     private MultipartFile femaleSingleImage;

@@ -8,9 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class AIImageResponseDTO {
+public class AiImageResponse {
 
     private MultipartFile aiImage;
-
-
 }
