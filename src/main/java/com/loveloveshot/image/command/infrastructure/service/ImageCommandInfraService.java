@@ -1,47 +1,22 @@
 package com.loveloveshot.image.command.infrastructure.service;
 
 import com.loveloveshot.common.annotation.InfraService;
-import com.loveloveshot.image.command.application.dto.AIImageResponseDTO;
-import com.loveloveshot.image.command.application.dto.ImagesDTO;
-import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
+import com.loveloveshot.image.command.application.dto.AiImageResponse;
+import com.loveloveshot.image.command.application.dto.SingleImageRequest;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
-import org.json.simple.JSONObject;
-
-import java.util.Map;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @InfraService
 public class ImageCommandInfraService implements ImageCommandDomainService {
-    /**
-     * Map을 jsonString으로 변환
-     */
-    @SuppressWarnings("unchecked")
-    public static String getJsonStringFromMap(Map<String, Object> map) {
-
-        JSONObject json = new JSONObject();
-
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-
-            String key = entry.getKey();
-            Object value = entry.getValue();
-
-            json.put(key, value);
-        }
-
-        return json.toJSONString();
-    }
+    final String REQUEST_URL = "http://192.168.0.40:5001"; // AI 이미지 생성 API URL
 
     @Override
-    public AIImageResponseDTO getAISingleImage(SingleImageRequestDTO singleImageDTO, ImagesDTO imagesDTO) {
-        System.out.println("imagesDTO1 = " + imagesDTO.getMaleImage());
-        System.out.println("imagesDTO2 = " + imagesDTO.getFemaleImage());
+    public AiImageResponse getAISingleImage(SingleImageRequest singleImageDTO) {
 
-        String reqURL = "http://192.168.0.40:5001/"; // AI 단독 이미지 생성 API URL
-
-        // WebClient 방식
-
-
-//        HttpURLConnection 방식
-//
+//      HttpURLConnection 방식
 //        try {
 //            // Set header
 //            Map<String, String> headers = new HashMap<>();
@@ -62,7 +37,22 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
 //            e.printStackTrace();
 //        }
 
-        return null;
+        // WebClient 방식
+        WebClient webClient = WebClient.builder().baseUrl(REQUEST_URL).build();
+
+        MultipartBodyBuilder formData = new MultipartBodyBuilder();
+        formData.part("imgFile", singleImageDTO.getMaleSingleImage());
+        formData.part("imgFile", singleImageDTO.getFemaleSingleImage());
+
+        AiImageResponse response = webClient.post()
+                .uri("/") // baseUrl 이후 uri
+                .contentType(MediaType.MULTIPART_FORM_DATA) // 보내는 자원의 형식(header에 담김)
+                .body(BodyInserters.fromMultipartData(formData.build())) // 요청 body
+                .retrieve() // ResponseEntity를 받아 디코딩
+                .bodyToMono(AiImageResponse.class) // 0~1개의 결과 리턴
+                .block(); // 응답 대기(blocking)
+        System.out.println("response = " + response);
+        return response;
     }
 
 //    @Override

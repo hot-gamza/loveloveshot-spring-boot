@@ -1,19 +1,15 @@
 package com.loveloveshot.image.command.application.controller;
 
 import com.loveloveshot.common.response.ApiResponse;
-import com.loveloveshot.image.command.application.dto.ImagesDTO;
-import com.loveloveshot.image.command.application.dto.SingleImageRequestDTO;
+import com.loveloveshot.image.command.application.dto.SingleImageRequest;
 import com.loveloveshot.image.command.application.service.ImageCommandService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -23,9 +19,9 @@ public class ImageCommandController {
     private final ImageCommandService imageCommandService;
 
     @PostMapping("/singleImage") // 필기. RequestParam에 name값을 지정해주지 않으면 디폴트로 변수명을 key값으로 가짐.
-    public ApiResponse uploadSingleImage(@RequestParam MultipartFile maleSingleImage,
-                                         @RequestParam MultipartFile femaleSingleImage,
-                                         SingleImageRequestDTO singleImageDTO) {
+    public ResponseEntity<ApiResponse> uploadSingleImage(@RequestParam MultipartFile maleSingleImage,
+                                                         @RequestParam MultipartFile femaleSingleImage,
+                                                         SingleImageRequest singleImageDTO) {
 
         singleImageDTO.setMaleSingleImage(maleSingleImage);
         singleImageDTO.setFemaleSingleImage(femaleSingleImage);
@@ -42,37 +38,8 @@ public class ImageCommandController {
 
         Long userNo = 1L;   //임의 값
 
-        String filePath = "C:\\originalAiImages/";
-
-        File dir = new File(filePath);
-        if (!dir.exists()) {
-            dir.mkdirs();   //폴더 없을 시 자동으로 하위폴더 생성
-        }
-
-        String originFileName1 = maleSingleImage.getOriginalFilename();  //원본 파일 이름
-        String ext1 = originFileName1.substring(originFileName1.lastIndexOf(".") + 1); //파일 확장자
-        String savedName1 = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext1; //저장되는 이름
-
-        String originFileName2 = maleSingleImage.getOriginalFilename();  //원본 파일 이름
-        String ext2 = originFileName2.substring(originFileName2.lastIndexOf(".") + 1); //파일 확장자
-        String savedName2 = UUID.randomUUID().toString().replaceAll("-", "") + "." + ext2; //저장되는 이름
-
-        System.out.println("filePath = " + filePath + savedName1);
-        System.out.println("filePath = " + filePath + savedName2);
-
-        try {
-            maleSingleImage.transferTo(new File(filePath + savedName1));
-            femaleSingleImage.transferTo(new File(filePath + savedName2));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        ImagesDTO imagesDTO = new ImagesDTO();
-        imagesDTO.setMaleImage(filePath + savedName1);
-        imagesDTO.setFemaleImage(filePath + savedName2);
-
-        return ApiResponse.success("성공적으로 등록되었습니다."
-                , imageCommandService.createAISingleImage(userNo, singleImageDTO, imagesDTO));
+        return ResponseEntity.ok(ApiResponse.success("성공적으로 등록되었습니다."
+                , imageCommandService.createAISingleImage(userNo, singleImageDTO)));
     }
 
 
