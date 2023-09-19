@@ -1,13 +1,13 @@
 package com.loveloveshot.image.command.application.service;
 
+import com.loveloveshot.image.command.application.dto.AiImageRequest;
+import com.loveloveshot.image.command.application.dto.ImageRequest;
 import com.loveloveshot.image.command.application.dto.ImageResponse;
-import com.loveloveshot.image.command.application.dto.SingleImageRequest;
+import com.loveloveshot.image.command.domain.aggregate.entity.AiImage;
 import com.loveloveshot.image.command.domain.repository.ImageCommandRepository;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,9 +17,9 @@ public class ImageCommandService {
     private final ImageCommandRepository imageCommandRepository;
 
 
-    public ImageResponse createAISingleImage(Long userNo, SingleImageRequest singleImageDTO) throws IOException {
+    public ImageResponse createAISingleImage(Long userNo, ImageRequest imageRequest) {
 
-        ImageResponse aiImageDTO = imageCommandDomainService.getAISingleImage(singleImageDTO);
+        ImageResponse aiImageDTO = imageCommandDomainService.uploadStandardImage(imageRequest);
 
 //        String filePath = "C:\\AIImages/";
 //
@@ -49,5 +49,25 @@ public class ImageCommandService {
 //        }
 
         return aiImageDTO;
+    }
+
+    // 스탠다드 이미지 업로드
+    public ImageResponse uploadStandardImage(ImageRequest imageRequest) {
+        return imageCommandDomainService.uploadStandardImage(imageRequest);
+    }
+
+    // 스탠다드 AI 이미지 저장
+    public ImageResponse saveStandardImage(AiImageRequest aiImageRequest) {
+        AiImage aiImage = AiImage.builder()
+                .imageName(aiImageRequest.getAiImage().getName())
+                .imagePath(aiImageRequest.getAiImage().getPath())
+                .build();
+        imageCommandRepository.save(aiImage);
+        return new ImageResponse();
+    }
+
+    public ImageResponse uploadPremiumImages(ImageRequest imageRequest) {
+
+        return imageCommandDomainService.uploadPremiumImages(imageRequest);
     }
 }
