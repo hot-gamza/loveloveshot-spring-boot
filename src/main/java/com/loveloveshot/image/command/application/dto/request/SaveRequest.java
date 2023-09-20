@@ -1,4 +1,4 @@
-package com.loveloveshot.image.command.application.dto;
+package com.loveloveshot.image.command.application.dto.request;
 
 import lombok.*;
 
@@ -9,6 +9,7 @@ import java.io.File;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class AiImageRequest {
+public class SaveRequest {
     private File aiImage;
+    private String taskId;
 }

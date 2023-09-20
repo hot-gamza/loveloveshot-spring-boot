@@ -1,8 +1,10 @@
 package com.loveloveshot.image.command.infrastructure.service;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.loveloveshot.common.annotation.InfraService;
-import com.loveloveshot.image.command.application.dto.ImageRequest;
-import com.loveloveshot.image.command.application.dto.ImageResponse;
+import com.loveloveshot.image.command.application.dto.request.ImageRequest;
+import com.loveloveshot.image.command.application.dto.response.UploadResponse;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
@@ -19,7 +21,7 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
     private final int UPLOAD_COUNT = 0;
 
     @Override
-    public ImageResponse uploadStandardImage(ImageRequest imageRequest) {
+    public UploadResponse uploadStandardImage(ImageRequest imageRequest) {
         Resource maleImages = imageRequest.getMaleImages().get(0);
         Resource femaleImages = imageRequest.getFemaleImages().get(0);
         MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
@@ -33,6 +35,13 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
                 .retrieve() // 디코딩
                 .bodyToMono(String.class) // 0~1개의 결과 리턴
                 .block(); // blocking
+        System.out.println("response = " + response);
+        JsonElement element = JsonParser.parseString(response);
+        String status = element.getAsJsonObject().get("status").getAsString();
+        String taskId = element.getAsJsonObject().get("task_id").getAsString();
+        System.out.println("status = " + status);
+        System.out.println("taskId = " + taskId);
+
 //        // LinkedMultiValueMap에 List 담기
 //        LinkedMultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
 //        body.add("files", imageRequest.getMaleImages());
@@ -54,7 +63,7 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
 //                .bodyToMono(byte[].class) // 0~1개의 결과 리턴
 //                .block(); // blocking
 
-        System.out.println("response = " + response);
+
 //        List<String> files = new ArrayList<>();
 //        String filePath = "src/main/webapp/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
 //        try {
@@ -84,11 +93,11 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        return new ImageResponse(UPLOAD_COUNT + 1);
+        return new UploadResponse(status, taskId);
     }
 
     @Override
-    public ImageResponse uploadPremiumImages(ImageRequest imageRequest) {
+    public UploadResponse uploadPremiumImages(ImageRequest imageRequest) {
         return null;
     }
 

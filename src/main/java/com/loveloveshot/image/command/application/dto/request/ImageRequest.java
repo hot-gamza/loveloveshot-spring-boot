@@ -1,4 +1,4 @@
-package com.loveloveshot.image.command.application.dto;
+package com.loveloveshot.image.command.application.dto.request;
 
 import lombok.*;
 import org.springframework.core.io.Resource;
