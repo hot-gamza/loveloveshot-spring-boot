@@ -47,7 +47,7 @@ public class ImageCommandController {
         imageRequest.setMaleImages(maleImages);
         imageRequest.setFemaleImages(femaleImages);
 
-        return ResponseEntity.ok(ApiResponse.success("성공적으로 업로드 되었습니다."
+        return ResponseEntity.ok(ApiResponse.success("성공적으로 업로드 되었습니다. "
                 , imageCommandService.uploadStandardImage(imageRequest)));
     }
 
