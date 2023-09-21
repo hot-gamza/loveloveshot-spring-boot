@@ -68,11 +68,8 @@ public class ImageCommandController {
         }
 
         String originFileName = aiImage.getOriginalFilename();
-        System.out.println("originFileName = " + originFileName);
         String ext = originFileName.substring(originFileName.lastIndexOf("."));
-        System.out.println("ext = " + ext);
         String savedName = UUID.randomUUID().toString().replaceAll("-", "") + ext;
-        System.out.println("savedName = " + savedName);
 
         File targetFile = new File(filePath + "/" + savedName); // 저장할 파일 객체 생성
         try {
