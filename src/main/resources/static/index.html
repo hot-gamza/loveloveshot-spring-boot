@@ -7,16 +7,16 @@
 <body>
 
 <h3>기본 사진 업로드</h3>
-<form action="api/v1/singleImage" method="post" encType="multipart/form-data">
-    남성이미지 : <input type="file" name="maleSingleImage"><br>
-    여성이미지 : <input type="file" name="femaleSingleImage"><br>
+<form action="api/v1/uploadStandardImage" encType="multipart/form-data" method="post">
+    남성이미지 : <input name="maleImage" type="file"><br>
+    여성이미지 : <input name="femaleImage" type="file"><br>
     <input type="submit">
 </form>
 
 <h3>프리미엄 사진 업로드</h3>
-<form action="api/v1/imageList" method="post" encType="multipart/form-data">
-    남성이미지 : <input type="file" name="maleImageList" multiple><br>
-    여성이미지 : <input type="file" name="femaleImageList" multiple><br>
+<form action="api/v1/imageList" encType="multipart/form-data" method="post">
+    남성이미지 : <input multiple name="maleImageList" type="file"><br>
+    여성이미지 : <input multiple name="femaleImageList" type="file"><br>
     <input type="submit">
 </form>
 

@@ -3,82 +3,80 @@ package com.loveloveshot.image.command.infrastructure.service;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.loveloveshot.common.annotation.InfraService;
-import com.loveloveshot.image.command.application.dto.ImageResponse;
-import com.loveloveshot.image.command.application.dto.SingleImageRequest;
+import com.loveloveshot.image.command.application.dto.request.ImageRequest;
+import com.loveloveshot.image.command.application.dto.response.UploadResponse;
 import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
-import org.springframework.http.client.MultipartBodyBuilder;
-import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.UUID;
 
 @InfraService
 public class ImageCommandInfraService implements ImageCommandDomainService {
-    private final String REQUEST_URL = "http://192.168.0.36"; // AI 이미지 생성 API URL
-    private final WebClient WEBCLIENT = WebClient.builder().baseUrl(REQUEST_URL).build();
+    private final String REQUEST_URL = "http://192.168.0.198:5001"; // AI 이미지 생성 API URL
+    private final WebClient WEBCLIENT = WebClient.builder()
+            .baseUrl(REQUEST_URL)
+            .build();
+    private final int UPLOAD_COUNT = 0;
 
     @Override
-    public ImageResponse getAISingleImage(SingleImageRequest singleImageDTO) throws IOException {
-
-//      HttpURLConnection 방식
-//        try {
-//            // Set header
-//            Map<String, String> headers = new HashMap<>();
-//            HttpPostMultipart multipart = new HttpPostMultipart(reqURL, "utf-8", headers);
-//
-//            // Add form field
-////            multipart.addFormField("username", "test_name");
-////            multipart.addFormField("password", "test_psw");
-//
-//            // Add file
-//            multipart.addFilePart("imgFile", new File(imagesDTO.getMaleImage()));
-//            multipart.addFilePart("imgFile", new File(imagesDTO.getFemaleImage()));
-//
-//            // Print result
-//            String response = multipart.finish();
-//            System.out.println(response);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
-        // WebClient 방식
-        MultipartBodyBuilder formData = new MultipartBodyBuilder();
-        formData.part("imgFile", singleImageDTO.getMaleSingleImage().getResource());
-        formData.part("imgFile", singleImageDTO.getFemaleSingleImage().getResource());
+    public UploadResponse uploadStandardImage(ImageRequest imageRequest) {
+        Resource maleImages = imageRequest.getMaleImages().get(0);
+        Resource femaleImages = imageRequest.getFemaleImages().get(0);
+        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+        body.add("male_files", maleImages);
+        body.add("female_files", femaleImages);
 
         String response = WEBCLIENT.post()
                 .uri("/main/standard") // baseUrl 이후 uri
-                .accept(MediaType.MULTIPART_FORM_DATA)
-                .contentType(MediaType.MULTIPART_FORM_DATA) // 보내는 자원의 형식(header에 담김)
-                .body(BodyInserters.fromMultipartData(formData.build())) // 요청 body
-                .retrieve() // ResponseEntity를 받아 디코딩
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .bodyValue(body) // 요청 body
+                .retrieve() // 디코딩
                 .bodyToMono(String.class) // 0~1개의 결과 리턴
                 .block(); // blocking
-
+        System.out.println("response = " + response);
         JsonElement element = JsonParser.parseString(response);
-        String fileData = element.getAsJsonObject().get("file_data").getAsString();
-        String filePath = "/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
+        String status = element.getAsJsonObject().get("status").getAsString();
+        String taskId = element.getAsJsonObject().get("task_id").getAsString();
+        System.out.println("status = " + status);
+        System.out.println("taskId = " + taskId);
 
-        // Base64 문자열을 바이트 배열로 변환
-        byte[] imageBytes = Base64.getDecoder().decode(fileData);
+//        List<String> files = new ArrayList<>();
+//        String filePath = "src/main/webapp/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
+//        try {
+//            // 바이트 배열을 파일로 저장
+//            FileOutputStream fos = new FileOutputStream(filePath);
+//            fos.write(response);
+//            fos.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        files.add(0, filePath);
+//        System.out.println("files = " + files);
 
-        // 바이트 배열을 BufferedImage 객체로 변환
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
-            BufferedImage image = ImageIO.read(bis);
+        // 이미지 AI 서버에서 JSON으로 받는 법
+//        JsonElement element = JsonParser.parseString(response);
+//        String fileData = element.getAsJsonObject().get("file_data").getAsString();
+//
+//        // Base64 문자열을 바이트 배열로 변환
+//        byte[] imageBytes = Base64.getDecoder().decode(fileData);
+//
+//        // 바이트 배열을 BufferedImage 객체로 변환
+//        try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
+//            BufferedImage image = ImageIO.read(bis);
+//
+//            // BufferedImage 객체를 이미지 파일로 저장
+//            ImageIO.write(image, "png", new File(filePath));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        return new UploadResponse(status, taskId);
+    }
 
-            // BufferedImage 객체를 이미지 파일로 저장
-            ImageIO.write(image, "png", new File("src/main/webapp" + filePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return new ImageResponse(filePath);
+    @Override
+    public UploadResponse uploadPremiumImages(ImageRequest imageRequest) {
+        return null;
     }
 
 //    @Override

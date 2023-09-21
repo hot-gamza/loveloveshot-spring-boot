@@ -21,4 +21,13 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler(resourceHandler)
                 .addResourceLocations(resourceLocation);
     }
+
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        // 모든 uri에 대해 http://localhost:18080, http://localhost:8180 도메인은 접근을 허용한다.
+//        registry.addMapping("/**")
+//                .allowedOrigins("http://localhost:3000", "https://loveloveshot.com", "http://192.168.0.12:3000")
+//                .allowedMethods("GET", "POST")
+//                .allowCredentials(true);
+//    }
 }
