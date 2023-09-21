@@ -1,4 +1,4 @@
-package com.loveloveshot.image.command.application.dto;
+package com.loveloveshot.image.command.application.dto.response;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,8 +10,6 @@ import java.io.Serializable;
 @Getter
 @RequiredArgsConstructor
 @NoArgsConstructor(force = true)
-public class AiImageResponse implements Serializable {
-
+public class SaveResponse implements Serializable {
     private final MultipartFile aiImage;
-
 }

@@ -1,15 +1,15 @@
 package com.loveloveshot.image.command.domain.service;
 
 import com.loveloveshot.common.annotation.DomainService;
-import com.loveloveshot.image.command.application.dto.ImageResponse;
-import com.loveloveshot.image.command.application.dto.SingleImageRequest;
-
-import java.io.IOException;
+import com.loveloveshot.image.command.application.dto.request.ImageRequest;
+import com.loveloveshot.image.command.application.dto.response.UploadResponse;
 
 @DomainService
 public interface ImageCommandDomainService {
 
-    ImageResponse getAISingleImage(SingleImageRequest singleImageDTO) throws IOException;
+    UploadResponse uploadStandardImage(ImageRequest imageRequest);
+
+    UploadResponse uploadPremiumImages(ImageRequest imageRequest);
 
 //    void getAIImageList(ImageListRequestDTO imageListDTO);
 }
