@@ -28,11 +28,7 @@ public class ImageCommandInfraService implements ImageCommandDomainService {
         body.add("male_files", maleImages);
         body.add("female_files", femaleImages);
 
-        MultiValueMap<String, MultipartFile> form = new LinkedMultiValueMap<>();
-        form.add("maleImage", singleImageDTO.getMaleSingleImage());
-        form.add("femaleImage", singleImageDTO.getFemaleSingleImage());
-
-        String response = webClient.post()
+        String response = WEBCLIENT.post()
                 .uri("/main/standard") // baseUrl 이후 uri
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .bodyValue(body) // 요청 body
