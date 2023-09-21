@@ -59,10 +59,27 @@ public class ImageCommandController {
         System.out.println("aiImage = " + aiImage);
         System.out.println("taskId = " + taskId);
         List<File> files = new ArrayList<>();
-        String filePath = "src/main/webapp/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
 
-        File targetFile = new File("src/main/webapp/AiImages/" + aiImage.getOriginalFilename() + ".png"); // 저장할 파일 객체 생성
-        aiImage.transferTo(targetFile); // 파일 저장
+        String filePath = System.getProperty("user.dir") + "/src/main/webapp/AiImages/"; // Ai 이미지 로컬 저장 경로
+
+        File dir = new File(filePath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        String originFileName = aiImage.getOriginalFilename();
+        System.out.println("originFileName = " + originFileName);
+        String ext = originFileName.substring(originFileName.lastIndexOf("."));
+        System.out.println("ext = " + ext);
+        String savedName = UUID.randomUUID().toString().replaceAll("-", "") + ext;
+        System.out.println("savedName = " + savedName);
+
+        File targetFile = new File(filePath + "/" + savedName); // 저장할 파일 객체 생성
+        try {
+            aiImage.transferTo(targetFile);
+        } catch (IOException e) {
+            new File(filePath + "/" + savedName).delete();
+        }
         files.add(0, targetFile);
         System.out.println("targetFile = " + targetFile);
         saveRequest.setAiImage(targetFile);
@@ -72,23 +89,27 @@ public class ImageCommandController {
                 , imageCommandService.saveStandardImage(saveRequest)));
     }
 
+    // 프리미엄 이미지 업로드
+    @PostMapping("/uploadPremiumImage")
+    public ResponseEntity<ApiResponse> uploadImageList(@RequestParam List<MultipartFile> maleImages,
+                                                       @RequestParam List<MultipartFile> femaleImages,
+                                                       ImageRequest imageRequest) {
+        List<Resource> maleImageResources = getMultipartFile(maleImages);
+        List<Resource> femaleImageResources = getMultipartFile(femaleImages);
 
-////    @PostMapping("/imageList")
-////    public void uploadImageList(@RequestParam List<MultipartFile> maleImageList,
-////                                @RequestParam List<MultipartFile> femaleImageList,
-////                                ImageListRequestDTO imageListDTO) {
-//
-//        imageListDTO.setMaleImageList(maleImageList);
-//        imageListDTO.setFemaleImageList(femaleImageList);
-//
-//        if(maleImageList.size() < 2 || maleImageList.size() > 20) {
-//            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
-//        }
-//
-//        if(femaleImageList.size() < 2 || femaleImageList.size() > 20) {
-//            throw new IllegalArgumentException("2~20장의 사진을 올려주세요");
-//        }
-//
-//        imageCommandService.transferImageList(imageListDTO);
-//    }
+        imageRequest.setMaleImages(maleImageResources);
+        imageRequest.setFemaleImages(femaleImageResources);
+
+        return ResponseEntity.ok(ApiResponse.success("성공적으로 업로드 되었습니다."
+                , imageCommandService.uploadPremiumImages(imageRequest)));
+    }
+
+    private List<Resource> getMultipartFile(List<MultipartFile> images) {
+        List<Resource> imageResources = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            imageResources.add(image.getResource());
+        }
+        return imageResources;
+    }
 }
