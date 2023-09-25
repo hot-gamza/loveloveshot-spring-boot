@@ -3,7 +3,6 @@ package com.loveloveshot.image.command.application.dto.request;
 import lombok.*;
 import org.springframework.core.io.Resource;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Getter
@@ -11,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class ImageRequest implements Serializable {
-    private List<Resource> maleImages;
-    private List<Resource> femaleImages;
+public class ImageRequest {
+    private List<Resource> maleImageResources;
+    private List<Resource> femaleImageResources;
 }

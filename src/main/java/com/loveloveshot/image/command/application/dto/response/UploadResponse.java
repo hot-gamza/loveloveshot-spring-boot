@@ -1,13 +1,16 @@
 package com.loveloveshot.image.command.application.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@RequiredArgsConstructor
-@NoArgsConstructor(force = true)
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class UploadResponse {
-    private final String status;
-    private final String taskId;
+    private String status;
+    private String taskId;
+    private int waitingNumber;
 }

@@ -9,13 +9,9 @@ import com.loveloveshot.image.command.domain.service.ImageCommandDomainService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-
 @Service
 @RequiredArgsConstructor
 public class ImageCommandService {
-
     private final ImageCommandDomainService imageCommandDomainService;
     private final ImageCommandRepository imageCommandRepository;
 
@@ -25,11 +21,12 @@ public class ImageCommandService {
     }
 
     // 일반 AI 이미지 저장
-    public UploadResponse saveStandardImage(SaveRequest saveRequest) throws IOException {
+    public UploadResponse saveStandardImage(SaveRequest saveRequest) {
         AiImage aiImage = AiImage.builder()
-                .imageName(saveRequest.getAiImage().getName())
-                .imagePath(saveRequest.getAiImage().getPath())
+                .imageName(saveRequest.getAiImage().get(0).getName())
+                .imagePath(saveRequest.getAiImage().get(0).getPath())
                 .taskId(saveRequest.getTaskId())
+                .grade("일반")
                 .build();
         imageCommandRepository.save(aiImage);
         return new UploadResponse();
@@ -37,8 +34,21 @@ public class ImageCommandService {
 
     // 프리미엄 이미지 업로드
     public UploadResponse uploadPremiumImages(ImageRequest imageRequest) {
-
         return imageCommandDomainService.uploadPremiumImages(imageRequest);
+    }
+
+    // 프리미엄 AI 이미지 저장
+    public UploadResponse savePremiumImage(SaveRequest saveRequest) {
+        for (int i = 0; i < saveRequest.getAiImage().size(); i++) {
+            AiImage aiImage = AiImage.builder()
+                    .imageName(saveRequest.getAiImage().get(i).getName())
+                    .imagePath(saveRequest.getAiImage().get(i).getPath())
+                    .taskId(saveRequest.getTaskId())
+                    .grade("프리미엄")
+                    .build();
+            imageCommandRepository.save(aiImage);
+        }
+        return new UploadResponse();
     }
 
 }
