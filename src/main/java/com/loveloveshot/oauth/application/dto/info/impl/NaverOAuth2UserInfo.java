@@ -24,12 +24,12 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     @Override
     public String getNickName() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
+        System.out.println("네이버 닉네임 response = " + response);
+//        if (response == null) {
+//            return null;
+//        }
 
-        if (response == null) {
-            return null;
-        }
-
-        return (String) response.get("name");
+        return (String) response.get("nickname");
     }
 
     @Override
@@ -47,9 +47,9 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     public String getProfileUrl() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
-        if (response == null) {
-            return null;
-        }
+//        if (response == null) {
+//            return null;
+//        }
 
         return (String) response.get("profile_image");
     }
@@ -68,9 +68,9 @@ public class NaverOAuth2UserInfo extends OAuth2UserInfo {
     public String getGender() {
         Map<String, Object> response = (Map<String, Object>) attributes.get("response");
 
-        if (response == null) {
-            return null;
-        }
+//        if (response == null) {
+//            return null;
+//        }
         return (String) response.get("gender");
     }
 }

@@ -18,11 +18,13 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
     @Override
     public String getNickName() {
         Map<String, Object> account = (Map<String, Object>) attributes.get("kakao_account");
-
-        if (account == null) {
+        Map<String, Object> profile = (Map<String, Object>) account.get("profile");
+        System.out.println("account = " + account);
+        System.out.println("profile = " + profile);
+        if (profile == null) {
             return null;
         }
-        return (String) account.get("profile_nickname");
+        return (String) profile.get("nickname");
     }
 
     @Override

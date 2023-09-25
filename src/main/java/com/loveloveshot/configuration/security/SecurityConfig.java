@@ -24,6 +24,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -48,13 +49,15 @@ public class SecurityConfig {
     // UserDetailsService 설정
     @Bean
     protected AuthenticationProvider authenticationProvider() {
+        System.out.println("authenticationProvider 들어옴 ");
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
         return authenticationProvider;
     }
 
-    @Bean
+    @Bean()
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        System.out.println("filterChain 설정 ::::: ");
         http
                 .cors()// CORS 허용
                 .and()
@@ -91,8 +94,8 @@ public class SecurityConfig {
                 .successHandler(oAuth2AuthenticationSuccessHandler())
                 .failureHandler(oAuth2AuthenticationFailureHandler());
 
-        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
+//        http.addFilterBefore(tokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(tokenAuthenticationFilter(), OAuth2LoginAuthenticationFilter.class);
         return http.build();
     }
 

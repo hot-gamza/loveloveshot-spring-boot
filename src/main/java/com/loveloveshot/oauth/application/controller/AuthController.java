@@ -31,7 +31,7 @@ public class AuthController {
     private final AuthTokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
 
-    private final static long THREE_DAYS_MSEC = 259200000;
+//    private final static long THREE_DAYS_MSEC = 259200000;
 
     @PostMapping("/login")
     public ApiResponse login(@RequestBody AuthCommandRequest authRequest) {

@@ -29,6 +29,8 @@ public class AuthToken {
     }
 
     private String createAuthToken(String id, Date expiry) {
+        System.out.println("id = " + id);
+        System.out.println("expiry = " + expiry);
         return Jwts.builder()
                 .setSubject(id)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -37,6 +39,9 @@ public class AuthToken {
     }
 
     private String createAuthToken(String id, String role, Date expiry) {
+        System.out.println("id = " + id);
+        System.out.println("role = " + role);
+        System.out.println("expiry = " + expiry);
         return Jwts.builder()
                 .setSubject(id)
                 .claim(AUTHORITIES_KEY, role)

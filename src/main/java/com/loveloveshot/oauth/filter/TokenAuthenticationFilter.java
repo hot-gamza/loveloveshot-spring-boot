@@ -25,14 +25,15 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request,
             HttpServletResponse response,
             FilterChain filterChain)  throws ServletException, IOException {
+        System.out.println("===================================12!@#!$@#!@");
         System.out.println("토큰 받아오기 전");
         String tokenStr = HeaderUtil.getAccessToken(request);
         System.out.println("받아온 토큰 tokenStr = " + tokenStr);
         AuthToken token = tokenProvider.convertAuthToken(tokenStr);
-        System.out.println("전환 ㅜ위치");
-
 
         if (token.validate()) {
+
+            System.out.println("토큰 유효성 검사");
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

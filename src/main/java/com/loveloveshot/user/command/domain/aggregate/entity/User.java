@@ -20,8 +20,8 @@ public class User extends BaseTimeEntity {
     @Column
     private String nickName;
 
-    private String password;
-    private String email;
+//    private String password;
+//    private String email;
 
     @Enumerated(EnumType.STRING)
     @NotNull
@@ -37,16 +37,35 @@ public class User extends BaseTimeEntity {
     @Column
     private String profileUrl;
 
+    @Column
+    private String age;
+
+    @Column
+    private String gender;
+
     @Builder
-    public User(Long userNo, String nickName, String email, SocialType socialType, String socialId, RoleType roleType, String profileUrl) {
+    public User(Long userNo, String nickName, SocialType socialType, String socialId, RoleType roleType, String profileUrl, String age, String gender) {
         this.userNo = userNo;
         this.nickName = nickName;
-        this.password = "NO_PASS";
-        this.email = email != null ? email : "NO_EMAIL";
+//        this.password = password;
+//        this.email = email;
         this.socialType = socialType;
         this.socialId = socialId;
         this.roleType = roleType;
-        this.profileUrl = profileUrl != null ? profileUrl : "";
+        this.profileUrl = profileUrl;
+        this.age = age;
+        this.gender = gender;
     }
 
+    public void updateNickName(String newNickName) {
+        this.nickName = newNickName;
+    }
+
+    public void updateProfileUrl(String newProfileUrl) {
+        this.profileUrl = newProfileUrl;
+    }
+
+    public void updateAge(String newAge) {
+        this.age = newAge;
+    }
 }
