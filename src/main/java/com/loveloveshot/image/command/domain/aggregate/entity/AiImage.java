@@ -1,9 +1,6 @@
 package com.loveloveshot.image.command.domain.aggregate.entity;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,6 +8,7 @@ import javax.persistence.*;
 @Table(name = "TBL_AI_IMAGE")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class AiImage {
     @Id
     @Column
@@ -26,11 +24,15 @@ public class AiImage {
     @Column
     private String imagePath;
 
+    @Column
+    private Long userNo;
+
     @Builder
-    public AiImage(Long aiImageNo, String taskId, String imageName, String imagePath) {
+    public AiImage(Long aiImageNo, String taskId, String imageName, String imagePath, Long userNo) {
         this.aiImageNo = aiImageNo;
         this.taskId = taskId;
         this.imageName = imageName;
         this.imagePath = imagePath;
+        this.userNo = userNo;
     }
 }
