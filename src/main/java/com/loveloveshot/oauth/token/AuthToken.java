@@ -2,9 +2,11 @@ package com.loveloveshot.oauth.token;
 
 import com.loveloveshot.configuration.properties.AppProperties;
 import io.jsonwebtoken.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.PropertySource;
 
 import java.security.Key;
 import java.util.Date;
@@ -14,7 +16,6 @@ import java.util.Date;
 @Getter
 public class AuthToken {
 
-    private AppProperties appProperties;
     private final String token;
     private final Key key;
 
@@ -26,6 +27,7 @@ public class AuthToken {
     }
 
     AuthToken(String id, String role, Date expiry, Key key) {
+        System.out.println("asdfasdf role = " + role);
         this.key = key;
         this.token = createAuthToken(id, role, expiry);
     }

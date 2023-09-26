@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class AuthTokenProvider {
 
-    private final Key key;
+    private Key key;
     private static final String AUTHORITIES_KEY = "role";
 
     public AuthTokenProvider(String secret) {
@@ -36,6 +36,10 @@ public class AuthTokenProvider {
 
     public AuthToken convertAuthToken(String token) {
         return new AuthToken(token, key);
+    }
+
+    public AuthToken convertAuthToken1(String token, Key key1) {
+        return new AuthToken(token, key1);
     }
 
     public Authentication getAuthentication(AuthToken authToken) {
