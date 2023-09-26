@@ -1,5 +1,6 @@
 package com.loveloveshot.oauth.token;
 
+import com.loveloveshot.configuration.properties.AppProperties;
 import io.jsonwebtoken.*;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Getter
 public class AuthToken {
 
+    private AppProperties appProperties;
     private final String token;
     private final Key key;
 
@@ -88,5 +90,16 @@ public class AuthToken {
         }
         return null;
     }
+
+    public String getSocialIdFromToken() {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getSubject();
+    }
+
 
 }

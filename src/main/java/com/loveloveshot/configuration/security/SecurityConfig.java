@@ -74,9 +74,10 @@ public class SecurityConfig {
 
                 .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .antMatchers("/*").permitAll()
                 .antMatchers("/api/**").hasRole(RoleType.USER.getCode())
                 .antMatchers("/api/**/admin/**").hasRole(RoleType.ADMIN.getCode())
-                .anyRequest().authenticated()
+//                .anyRequest().authenticated()
                 .and()
 
                 .oauth2Login()
