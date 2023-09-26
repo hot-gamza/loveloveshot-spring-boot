@@ -35,33 +35,4 @@ public class ImageQueryService {
         }
         return findResponses;
     }
-
-    // 일반 Ai 이미지 조회
-//    public FindResponse findStandardAiImage(FindRequest findRequest) {
-//        AiImage aiImage = imageQueryRepository.findAiImageByTaskId(findRequest.getTaskId());
-//        return new FindResponse(aiImage.getImageName()
-//                , aiImage.getImagePath()
-//                , aiImage.getTaskId());
-//    }
-
-//    public Map<String, List<FindResponse>> findAiImageByUserNo(FindRequest findRequest) {
-//        List<String> taskIds = imageQueryRepository.findDistinctTaskIdsByUserNo(findRequest.getUserNo());
-//
-//        Map<String, List<FindResponse>> taskResponsesMap = new HashMap<>();
-//
-//        for (String taskId : taskIds) {
-//            List<AiImage> aiImages = imageQueryRepository.findAiImageByTaskId(taskId);
-//
-//            List<FindResponse> findResponses = new ArrayList<>();
-//
-//            for (AiImage aiImage : aiImages) {
-//                FindResponse findResponse = new FindResponse(aiImage.getImageName(), aiImage.getImagePath(), aiImage.getTaskId());
-//                findResponses.add(findResponse);
-//            }
-//
-//            taskResponsesMap.put(taskId, findResponses);
-//        }
-//
-//        return taskResponsesMap;
-//    }
 }
