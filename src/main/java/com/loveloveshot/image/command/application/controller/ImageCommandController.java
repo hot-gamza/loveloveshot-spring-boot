@@ -21,7 +21,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"*", "http://localhost:3000", "http://192.168.0.11"})
 public class ImageCommandController {
     private static int WAITING_NUMBER = 0;
     private final ImageCommandService imageCommandService;
@@ -32,6 +32,7 @@ public class ImageCommandController {
     public ResponseEntity<ApiResponse> uploadStandardImage(@RequestParam MultipartFile maleImage,
                                                            @RequestParam MultipartFile femaleImage,
                                                            ImageRequest imageRequest) {
+        System.out.println("컨트롤러 왔다.");
         List<Resource> maleImages = new ArrayList<>();
         List<Resource> femaleImages = new ArrayList<>();
         IMAGE_EXCEPTION.standardImageUploadExceptionHandling(maleImage, femaleImage);
@@ -40,8 +41,8 @@ public class ImageCommandController {
         femaleImages.add(0, femaleImage.getResource());
         imageRequest.setMaleImageResources(maleImages);
         imageRequest.setFemaleImageResources(femaleImages);
-        UploadResponse uploadResponse = imageCommandService.uploadStandardImage(imageRequest);
         WAITING_NUMBER++;
+        UploadResponse uploadResponse = imageCommandService.uploadStandardImage(imageRequest);
         System.out.println("WAITING_NUMBER = " + WAITING_NUMBER);
         uploadResponse.setWaitingNumber(WAITING_NUMBER);
         return ResponseEntity.ok(ApiResponse.success("success", uploadResponse));
