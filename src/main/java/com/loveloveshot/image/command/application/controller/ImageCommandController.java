@@ -3,7 +3,9 @@ package com.loveloveshot.image.command.application.controller;
 import com.loveloveshot.common.response.ApiResponse;
 import com.loveloveshot.image.command.application.dto.request.ImageRequest;
 import com.loveloveshot.image.command.application.dto.request.SaveRequest;
+import com.loveloveshot.image.command.application.dto.response.UploadResponse;
 import com.loveloveshot.image.command.application.service.ImageCommandService;
+import com.loveloveshot.image.command.application.service.ImageException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
@@ -19,9 +21,11 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://loveloveshot.com", "http://192.168.0.12:3000", "*"})
+@CrossOrigin(origins = "*")
 public class ImageCommandController {
+    private static int WAITING_NUMBER = 0;
     private final ImageCommandService imageCommandService;
+    private final ImageException IMAGE_EXCEPTION = new ImageException();
 
     // 일반 이미지 업로드
     @PostMapping(value = "/uploadStandardImage")
@@ -30,37 +34,29 @@ public class ImageCommandController {
                                                            ImageRequest imageRequest) {
         List<Resource> maleImages = new ArrayList<>();
         List<Resource> femaleImages = new ArrayList<>();
+        IMAGE_EXCEPTION.standardImageUploadExceptionHandling(maleImage, femaleImage);
 
-        try {
-            if (maleImage.isEmpty() || femaleImage.isEmpty()) {
-                throw new NullPointerException("사진을 첨부해 주세요");
-            }
-            if (!maleImage.getContentType().startsWith("image") ||
-                    !femaleImage.getContentType().startsWith("image")) {
-                throw new IllegalArgumentException("이미지 형식의 파일을 올려주세요");
-            }
-        } catch (NullPointerException | IllegalArgumentException e) {
-            e.printStackTrace();
-        }
         maleImages.add(0, maleImage.getResource());
         femaleImages.add(0, femaleImage.getResource());
-        imageRequest.setMaleImages(maleImages);
-        imageRequest.setFemaleImages(femaleImages);
-
-        return ResponseEntity.ok(ApiResponse.success("성공적으로 업로드 되었습니다. "
-                , imageCommandService.uploadStandardImage(imageRequest)));
+        imageRequest.setMaleImageResources(maleImages);
+        imageRequest.setFemaleImageResources(femaleImages);
+        UploadResponse uploadResponse = imageCommandService.uploadStandardImage(imageRequest);
+        WAITING_NUMBER++;
+        System.out.println("WAITING_NUMBER = " + WAITING_NUMBER);
+        uploadResponse.setWaitingNumber(WAITING_NUMBER);
+        return ResponseEntity.ok(ApiResponse.success("success", uploadResponse));
     }
 
     // 일반 AI 이미지 저장
     @PostMapping("/saveAiImage")
-    public ResponseEntity<ApiResponse> saveAiImages(@RequestPart(value = "file", required = false) MultipartFile aiImage,
-                                                    @RequestPart(value = "task_id", required = false) String taskId,
-                                                    SaveRequest saveRequest) throws IOException {
+    public ResponseEntity<ApiResponse> saveAiImage(@RequestPart(value = "file", required = false) MultipartFile aiImage,
+                                                   @RequestPart(value = "task_id", required = false) String taskId,
+                                                   SaveRequest saveRequest) {
         System.out.println("aiImage = " + aiImage);
         System.out.println("taskId = " + taskId);
         List<File> files = new ArrayList<>();
 
-        String filePath = System.getProperty("user.dir") + "/src/main/webapp/AiImages/"; // Ai 이미지 로컬 저장 경로
+        String filePath = System.getProperty("user.dir") + "/src/main/webapp/standard/"; // Ai 이미지 로컬 저장 경로
 
         File dir = new File(filePath);
         if (!dir.exists()) {
@@ -78,27 +74,57 @@ public class ImageCommandController {
             new File(filePath + "/" + savedName).delete();
         }
         files.add(0, targetFile);
-        System.out.println("targetFile = " + targetFile);
-        saveRequest.setAiImage(targetFile);
+        saveRequest.setAiImage(files);
         saveRequest.setTaskId(taskId);
-
-        return ResponseEntity.ok(ApiResponse.success("성공적으로 저장 되었습니다."
+        WAITING_NUMBER--;
+        System.out.println("WAITING_NUMBER = " + WAITING_NUMBER);
+        return ResponseEntity.ok(ApiResponse.success("success"
                 , imageCommandService.saveStandardImage(saveRequest)));
+
+        //        List<String> files = new ArrayList<>();
+//        String filePath = "src/main/webapp/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
+//        try {
+//            // 바이트 배열을 파일로 저장
+//            FileOutputStream fos = new FileOutputStream(filePath);
+//            fos.write(response);
+//            fos.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        files.add(0, filePath);
+//        System.out.println("files = " + files);
+
+        // 이미지 AI 서버에서 JSON으로 받는 법
+//        JsonElement element = JsonParser.parseString(response);
+//        String fileData = element.getAsJsonObject().get("file_data").getAsString();
+//
+//        // Base64 문자열을 바이트 배열로 변환
+//        byte[] imageBytes = Base64.getDecoder().decode(fileData);
+//
+//        // 바이트 배열을 BufferedImage 객체로 변환
+//        try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
+//            BufferedImage image = ImageIO.read(bis);
+//
+//            // BufferedImage 객체를 이미지 파일로 저장
+//            ImageIO.write(image, "png", new File(filePath));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     // 프리미엄 이미지 업로드
     @PostMapping("/uploadPremiumImage")
-    public ResponseEntity<ApiResponse> uploadImageList(@RequestParam List<MultipartFile> maleImages,
-                                                       @RequestParam List<MultipartFile> femaleImages,
-                                                       ImageRequest imageRequest) {
-        List<Resource> maleImageResources = getMultipartFile(maleImages);
-        List<Resource> femaleImageResources = getMultipartFile(femaleImages);
+    public ResponseEntity<ApiResponse> uploadPremiumImages(@RequestParam List<MultipartFile> maleImages,
+                                                           @RequestParam List<MultipartFile> femaleImages,
+                                                           ImageRequest imageRequest) {
+        IMAGE_EXCEPTION.premiumImageUploadExceptionHandling(maleImages, femaleImages);
 
-        imageRequest.setMaleImages(maleImageResources);
-        imageRequest.setFemaleImages(femaleImageResources);
-
-        return ResponseEntity.ok(ApiResponse.success("성공적으로 업로드 되었습니다."
-                , imageCommandService.uploadPremiumImages(imageRequest)));
+        imageRequest.setMaleImageResources(getMultipartFile(maleImages));
+        imageRequest.setFemaleImageResources(getMultipartFile(femaleImages));
+        UploadResponse uploadResponse = imageCommandService.uploadStandardImage(imageRequest);
+        uploadResponse.setWaitingNumber(WAITING_NUMBER);
+        WAITING_NUMBER++;
+        return ResponseEntity.ok(ApiResponse.success("success", uploadResponse));
     }
 
     private List<Resource> getMultipartFile(List<MultipartFile> images) {
@@ -107,6 +133,70 @@ public class ImageCommandController {
         for (MultipartFile image : images) {
             imageResources.add(image.getResource());
         }
+        System.out.println("imageResources = " + imageResources);
         return imageResources;
+    }
+
+    // 프리미엄 AI 이미지 저장
+    @PostMapping("/saveAiImages")
+    public ResponseEntity<ApiResponse> saveAiImages(
+            @RequestPart(value = "files", required = false) List<MultipartFile> aiImages,
+            @RequestPart(value = "task_id", required = false) String taskId,
+            SaveRequest saveRequest) {
+        List<File> files = new ArrayList<>();
+        String filePath = System.getProperty("user.dir") + "/src/main/webapp/premium/"; // Ai 이미지 로컬 저장 경로
+        File dir = new File(filePath);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+        for (MultipartFile aiImage : aiImages) {
+            String originFileName = aiImage.getOriginalFilename();
+            String ext = originFileName.substring(originFileName.lastIndexOf("."));
+            String savedName = UUID.randomUUID().toString().replaceAll("-", "") + ext;
+
+            File targetFile = new File(filePath + "/" + savedName); // 저장할 파일 객체 생성
+            try {
+                aiImage.transferTo(targetFile);
+            } catch (IOException e) {
+                new File(filePath + "/" + savedName).delete();
+            }
+            files.add(targetFile);
+        }
+        saveRequest.setAiImage(files);
+        saveRequest.setTaskId(taskId);
+        WAITING_NUMBER--;
+
+        return ResponseEntity.ok(ApiResponse.success("success"
+                , imageCommandService.savePremiumImage(saveRequest)));
+
+        //        List<String> files = new ArrayList<>();
+//        String filePath = "src/main/webapp/AiImages/" + UUID.randomUUID() + ".png"; // Ai 이미지 로컬 저장 경로
+//        try {
+//            // 바이트 배열을 파일로 저장
+//            FileOutputStream fos = new FileOutputStream(filePath);
+//            fos.write(response);
+//            fos.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        files.add(0, filePath);
+//        System.out.println("files = " + files);
+
+        // 이미지 AI 서버에서 JSON으로 받는 법
+//        JsonElement element = JsonParser.parseString(response);
+//        String fileData = element.getAsJsonObject().get("file_data").getAsString();
+//
+//        // Base64 문자열을 바이트 배열로 변환
+//        byte[] imageBytes = Base64.getDecoder().decode(fileData);
+//
+//        // 바이트 배열을 BufferedImage 객체로 변환
+//        try (ByteArrayInputStream bis = new ByteArrayInputStream(imageBytes)) {
+//            BufferedImage image = ImageIO.read(bis);
+//
+//            // BufferedImage 객체를 이미지 파일로 저장
+//            ImageIO.write(image, "png", new File(filePath));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

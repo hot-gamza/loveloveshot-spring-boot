@@ -18,6 +18,9 @@ public class AiImage {
     private Long aiImageNo;
 
     @Column
+    private Long userNo;
+
+    @Column
     private String taskId;
 
     @Column
@@ -26,11 +29,16 @@ public class AiImage {
     @Column
     private String imagePath;
 
+    @Column
+    private String grade;
+
     @Builder
-    public AiImage(Long aiImageNo, String taskId, String imageName, String imagePath) {
+    public AiImage(Long aiImageNo, Long userNo, String taskId, String imageName, String imagePath, String grade) {
         this.aiImageNo = aiImageNo;
+        this.userNo = userNo;
         this.taskId = taskId;
         this.imageName = imageName;
         this.imagePath = imagePath;
+        this.grade = grade;
     }
 }

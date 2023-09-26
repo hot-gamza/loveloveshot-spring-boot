@@ -3,6 +3,7 @@ package com.loveloveshot.image.command.application.dto.request;
 import lombok.*;
 
 import java.io.File;
+import java.util.List;
 
 @Getter
 @Setter
@@ -10,6 +11,6 @@ import java.io.File;
 @AllArgsConstructor
 @ToString
 public class SaveRequest {
-    private File aiImage;
+    private List<File> aiImage;
     private String taskId;
 }
