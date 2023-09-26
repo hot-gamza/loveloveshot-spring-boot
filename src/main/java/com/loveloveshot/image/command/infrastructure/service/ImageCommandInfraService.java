@@ -14,7 +14,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 @InfraService
 public class ImageCommandInfraService implements ImageCommandDomainService {
-    private final String REQUEST_URL = "http://192.168.0.10"; // AI 이미지 생성 API URL
+    private final String REQUEST_URL = "http://192.168.0.11"; // AI 이미지 생성 API URL
     private final WebClient WEBCLIENT = WebClient.builder()
             .baseUrl(REQUEST_URL)
             .build();

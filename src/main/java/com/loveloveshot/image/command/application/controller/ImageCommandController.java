@@ -121,7 +121,7 @@ public class ImageCommandController {
 
         imageRequest.setMaleImageResources(getMultipartFile(maleImages));
         imageRequest.setFemaleImageResources(getMultipartFile(femaleImages));
-        UploadResponse uploadResponse = imageCommandService.uploadStandardImage(imageRequest);
+        UploadResponse uploadResponse = imageCommandService.uploadPremiumImages(imageRequest);
         uploadResponse.setWaitingNumber(WAITING_NUMBER);
         WAITING_NUMBER++;
         return ResponseEntity.ok(ApiResponse.success("success", uploadResponse));
