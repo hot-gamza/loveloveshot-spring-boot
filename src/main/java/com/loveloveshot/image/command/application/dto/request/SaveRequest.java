@@ -13,4 +13,5 @@ import java.util.List;
 public class SaveRequest {
     private List<File> aiImage;
     private String taskId;
+    private Long userNo;
 }

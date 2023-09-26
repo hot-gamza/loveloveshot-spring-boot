@@ -17,10 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class ImageQueryController {
     private final ImageQueryService imageQueryService;
 
-    // 일반 이미지 조회
-    @GetMapping("/findAiImage")
-    public ResponseEntity<ApiResponse> getStandardAiImage(FindRequest findRequest) {
+    // 유저번호로 taskId 목록 조회
+    @GetMapping("/taskIds")
+    public ResponseEntity<ApiResponse> getTaskIds(FindRequest findRequest) {
+
+        System.out.println("findRequest = " + findRequest);
+
         return ResponseEntity.ok(ApiResponse.success("조회 성공"
-                , imageQueryService.findStandardAiImage(findRequest)));
+                , imageQueryService.findTaskIds(findRequest)));
     }
+
+    // taskId로 이미지 목록 조회
+    @GetMapping("/images")
+    public ResponseEntity<ApiResponse> getAiImagesByTaskId(FindRequest findRequest) {
+
+        System.out.println("findRequest = " + findRequest);
+
+        return ResponseEntity.ok(ApiResponse.success("조회 성공"
+                , imageQueryService.findAiImagesByTaskId(findRequest)));
+    }
+
+
 }
