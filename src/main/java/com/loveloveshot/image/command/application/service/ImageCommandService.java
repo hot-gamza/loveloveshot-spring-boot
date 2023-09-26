@@ -24,7 +24,7 @@ public class ImageCommandService {
     public UploadResponse saveStandardImage(SaveRequest saveRequest) {
         AiImage aiImage = AiImage.builder()
                 .imageName(saveRequest.getAiImage().get(0).getName())
-                .imagePath(saveRequest.getAiImage().get(0).getPath())
+                .imagePath("/standard/" + saveRequest.getAiImage().get(0).getName())
                 .taskId(saveRequest.getTaskId())
                 .grade("일반")
                 .build();
@@ -42,7 +42,7 @@ public class ImageCommandService {
         for (int i = 0; i < saveRequest.getAiImage().size(); i++) {
             AiImage aiImage = AiImage.builder()
                     .imageName(saveRequest.getAiImage().get(i).getName())
-                    .imagePath(saveRequest.getAiImage().get(i).getPath())
+                    .imagePath("/premium/" + saveRequest.getAiImage().get(i).getName())
                     .taskId(saveRequest.getTaskId())
                     .grade("프리미엄")
                     .build();
